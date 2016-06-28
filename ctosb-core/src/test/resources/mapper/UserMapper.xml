@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctosb.core.mapper.UserMapper">
+	<insert id="insert" keyProperty="id">
+		insert into
+		user(id,user_name,password,age)
+		values(#{id},#{userName},#{password},#{age})
+	</insert>
+
+	<delete id="delete">
+		delete from user where id = #{id}
+	</delete>
+
+	<delete id="deleteByUserName">
+		delete from user where user_name = #{userName}
+	</delete>
+
+	<select id="getByUserName" resultType="com.ctosb.core.model.User"
+		parameterType="java.lang.String">
+		select * from user where user_name=#{userName}
+	</select>
+	<select id="get" resultType="com.ctosb.core.model.User">
+		select * from user
+	</select>
+</mapper>
