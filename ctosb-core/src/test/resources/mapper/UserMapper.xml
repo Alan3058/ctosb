@@ -3,10 +3,21 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ctosb.core.mapper.UserMapper">
-	<insert id="insert" keyProperty="id">
+	<insert id="insert">
+		<selectKey resultType="int" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 		insert into
 		user(id,user_name,password,age)
 		values(#{id},#{userName},#{password},#{age})
+	</insert>
+	<insert id="insertAll">
+		insert into
+		user(id,user_name,password,age)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.id},#{item.userName},#{item.password},#{item.age})
+		</foreach>
 	</insert>
 
 	<delete id="delete">
