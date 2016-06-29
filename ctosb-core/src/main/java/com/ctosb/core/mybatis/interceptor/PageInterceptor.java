@@ -1,6 +1,6 @@
 package com.ctosb.core.mybatis.interceptor;
 
-import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,12 +17,13 @@ import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ResultHandler;
 
 import com.ctosb.core.mybatis.Page;
 import com.ctosb.core.mybatis.dialet.LimitFactory;
 import com.ctosb.core.util.ReflectUtil;
 
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
+@Intercepts({@Signature(type = StatementHandler.class, method = "query", args = {Statement.class, ResultHandler.class})})
 public class PageInterceptor implements Interceptor {
 
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
