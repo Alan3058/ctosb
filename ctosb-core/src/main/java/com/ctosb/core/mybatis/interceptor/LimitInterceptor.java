@@ -1,7 +1,6 @@
 package com.ctosb.core.mybatis.interceptor;
 
 import java.sql.Connection;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -19,7 +18,7 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
 
 import com.ctosb.core.mybatis.Page;
-import com.ctosb.core.mybatis.dialet.DialetFactory;
+import com.ctosb.core.util.PageUtil;
 import com.ctosb.core.util.ReflectUtil;
 
 /**
@@ -45,9 +44,9 @@ public class LimitInterceptor implements Interceptor {
 		// get boundsql object
 		BoundSql boundSql = handler.getBoundSql();
 		// get paging infomation
-		Page page = getPage(boundSql.getParameterObject());
+		Page page = PageUtil.getPage(boundSql.getParameterObject());
 		// join paging sql
-		String sql = getLimitSql(boundSql.getSql(), page, configuration.getDatabaseId());
+		String sql = PageUtil.getLimitSql(boundSql.getSql(), page, configuration.getDatabaseId());
 		// write back set sql to boundsql object
 		ReflectUtil.setFieldValue(boundSql, "sql", sql);
 		return invocation.proceed();
@@ -64,52 +63,6 @@ public class LimitInterceptor implements Interceptor {
 
 	public void setProperties(Properties properties) {
 		// used specigy property of the outer properties config file
-	}
-
-	/**
-	 * get paging infomation
-	 * 
-	 * @param parameterObj
-	 * @return
-	 * @author Alan
-	 * @createTime 2015年12月12日 上午8:38:59
-	 */
-	private Page getPage(Object parameterObj) {
-		Page page = null;
-		// extract the page object from the input param
-		if (Map.class.isInstance(parameterObj)) {
-			for (Object obj : ((Map<?, ?>) parameterObj).values()) {
-				if (Page.class.isInstance(obj)) {
-					page = (Page) obj;
-					break;
-				}
-			}
-		} else if (Page.class.isInstance(parameterObj)) {
-			page = (Page) parameterObj;
-		}
-		return page;
-	}
-
-	/**
-	 * get limit sql
-	 * 
-	 * @param sql
-	 * @param page
-	 * @param dbType
-	 * @return
-	 * @author Alan
-	 * @createTime 2015年12月12日 下午1:22:05
-	 */
-	private String getLimitSql(String sql, Page page, String dbType) {
-		// if the paging object is null，return source sql
-		if (page == null) {
-			return sql;
-		}
-		// join limit sql
-		int offset = (page.getPageNum() - 1) * page.getPageSize();
-		int limit = page.getPageSize();
-		sql = DialetFactory.getLimit(dbType).getLimitSql(sql, offset, limit);
-		return sql;
 	}
 
 }

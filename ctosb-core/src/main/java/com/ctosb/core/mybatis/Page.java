@@ -54,6 +54,7 @@ public class Page implements Serializable {
 
 	public Page setTotalRecord(int totalRecord) {
 		this.totalRecord = totalRecord;
+		this.totalPage = (int) Math.ceil((totalRecord * 1.0) / pageSize);
 		return this;
 	}
 
