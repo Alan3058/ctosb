@@ -20,6 +20,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
 		configuration.setUseGeneratedKeys(true);
 		// add the paging interceptor
 		configuration.addInterceptor(new PageInterceptor());
+		// configuration.addInterceptor(new LimitInterceptor());
 		return sqlSessionFactory;
 	}
 

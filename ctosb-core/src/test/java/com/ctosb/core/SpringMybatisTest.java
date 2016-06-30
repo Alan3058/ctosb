@@ -12,6 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.ctosb.core.mapper.UserMapper;
 import com.ctosb.core.model.User;
+import com.ctosb.core.mybatis.Limit;
 import com.ctosb.core.mybatis.Page;
 
 public class SpringMybatisTest {
@@ -23,7 +24,7 @@ public class SpringMybatisTest {
 		applicationContext = new ClassPathXmlApplicationContext("spring-mybatis.xml");
 	}
 
-//	@Test
+	// @Test
 	public void testInsert() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		User user = new User();
@@ -35,7 +36,7 @@ public class SpringMybatisTest {
 		Assert.assertTrue("获取id成功，id=" + user.getId(), user.getId() != null);
 	}
 
-	@Test
+	// @Test
 	public void testInsertAll() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		List<User> users = new ArrayList<User>();
@@ -65,7 +66,21 @@ public class SpringMybatisTest {
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
 	}
 
-	// @Test
+	@Test
+	public void testSelectByUserNameAndLimit() {
+		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
+		// for(int i=0;i<50;i++){
+		// User user = new User();
+		// user.setUserName("user"+i);
+		// user.setPassword("test"+i);
+		// user.setAge(new Random().nextInt(100));
+		// userMapper.insert(user);
+		// }
+		List<User> users = userMapper.getByUserName("user", new Limit(2));
+		Assert.assertTrue("查询成功", users != null && users.size() > 0);
+	}
+
+	@Test
 	public void testSelectByUserName() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		// for(int i=0;i<50;i++){

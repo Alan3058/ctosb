@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ctosb.core.model.User;
+import com.ctosb.core.mybatis.Limit;
 import com.ctosb.core.mybatis.Page;
+import com.ctosb.core.mybatis.PageList;
 
 public interface UserMapper {
 
@@ -19,7 +21,9 @@ public interface UserMapper {
 
 	List<User> getByUserName(String userName);
 
-	List<User> getByUserName(@Param("userName") String userName, Page page);
+	PageList<User> getByUserName(@Param("userName") String userName, Page page);
+
+	List<User> getByUserName(@Param("userName") String userName, Limit limit);
 
 	List<User> get(Page page);
 }

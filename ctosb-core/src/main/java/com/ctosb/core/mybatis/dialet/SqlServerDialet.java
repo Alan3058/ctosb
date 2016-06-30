@@ -2,8 +2,9 @@ package com.ctosb.core.mybatis.dialet;
 
 
 
-public class SqlserverLimit implements Limit {
+public class SqlServerDialet extends AbstractDialet implements Dialet {
 
+	@Override
     public String getLimitSql(String sql, int offset, int limit) {
         // build paging sqlserver sql
         StringBuffer stringBuffer =
