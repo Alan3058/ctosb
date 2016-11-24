@@ -12,7 +12,6 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
@@ -26,9 +25,8 @@ import org.apache.ibatis.session.RowBounds;
 import com.ctosb.core.mybatis.Limit;
 import com.ctosb.core.mybatis.Page;
 import com.ctosb.core.mybatis.PageList;
-import com.ctosb.core.mybatis.dialet.DialetFactory;
-import com.ctosb.core.util.PageUtil;
 import com.ctosb.core.util.MybatisUtil;
+import com.ctosb.core.util.PageUtil;
 
 @Intercepts({ @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
 		RowBounds.class, ResultHandler.class, }) })
@@ -43,13 +41,15 @@ public class PageInterceptor implements Interceptor {
 		Object parameterObject = invocation.getArgs()[1];
 		// get mybatis configuration object
 		Configuration configuration = mappedStatement.getConfiguration();
-		// get boundsql object
-		BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 		// get paging or limit infomation
-		Object pageOrLimit = PageUtil.getPageOrLimit(boundSql.getParameterObject());
+		Object pageOrLimit = PageUtil.getPageOrLimit(parameterObject);
 		if (pageOrLimit == null) {
 			return invocation.proceed();
 		}
+		parameterObject = extractParameterObject(parameterObject);
+		invocation.getArgs()[1] = parameterObject;
+		// get boundsql object
+		BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 
 		if (pageOrLimit instanceof Page) {
 			Page page = (Page) pageOrLimit;
@@ -67,7 +67,7 @@ public class PageInterceptor implements Interceptor {
 			// excute limit sql
 			Object result = invocation.proceed();
 			// convert result to PageList instance
-			PageList pageList = new PageList((Collection) result);
+			PageList<?> pageList = new PageList((Collection) result);
 			pageList.setPage(page);
 			page.setTotalRecord(count);
 			// return PageList instance
@@ -80,6 +80,38 @@ public class PageInterceptor implements Interceptor {
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 		}
 		return invocation.proceed();
+	}
+
+	/**
+	 * when the number of paramter equal 4 , exclude page or limit parameter,
+	 * extract only one paramter that have not param annotation。<br/>
+	 * for this example get(User,Page); ==> User <br>
+	 * get(@Param("user")User,Page); ==>don't anything
+	 * 
+	 * @param parameterObject
+	 * @return
+	 */
+	private Object extractParameterObject(Object parameterObject) {
+		if (Map.class.isInstance(parameterObject)) {
+			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObject);
+			if (parameterMap.size() == 4) {
+				// this method have two parameter
+				if(parameterMap.containsKey("0")&& parameterMap.containsKey("1")){
+					//the two parameter has not Param annotation
+					Object param1 = parameterMap.get("0");
+					Object param2 = parameterMap.get("1");
+					if (PageUtil.isPageOrLimit(param2)) {
+						//the second parameter is page or limit type,and the first parameter has not Param annotation,then return the first parameter
+						return param1;
+					}
+					if (PageUtil.isPageOrLimit(param1)) {
+						//the first parameter is page or limit type,and the second parameter has not Param annotation,then return the second parameter
+						return param2;
+					}
+				}
+			}
+		}
+		return parameterObject;
 	}
 
 	/**

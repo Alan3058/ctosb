@@ -1,5 +1,6 @@
 package com.ctosb.core.util;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.ctosb.core.mybatis.Limit;
@@ -19,13 +20,15 @@ public class PageUtil {
 		Object object = null;
 		// extract the page object from the input param
 		if (Map.class.isInstance(parameterObj)) {
-			for (Object obj : ((Map<?, ?>) parameterObj).values()) {
-				if (Page.class.isInstance(obj) || Limit.class.isInstance(obj)) {
+			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObj);
+			Collection<?> values = parameterMap.values();
+			for (Object obj : values) {
+				if (isPageOrLimit(obj)) {
 					object = obj;
 					break;
 				}
 			}
-		} else if (Page.class.isInstance(parameterObj) || Limit.class.isInstance(parameterObj)) {
+		} else if (isPageOrLimit(parameterObj)) {
 			object = parameterObj;
 		}
 		return object;
@@ -109,5 +112,15 @@ public class PageUtil {
 		// join limit sql
 		sql = DialetFactory.getLimit(dbType).getLimitSql(sql, limit.getOffset(), limit.getCount());
 		return sql;
+	}
+
+	/**
+	 * if object is Page or Limit,return true
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static boolean isPageOrLimit(Object object) {
+		return Page.class.isInstance(object) || Limit.class.isInstance(object);
 	}
 }

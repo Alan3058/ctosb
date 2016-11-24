@@ -21,7 +21,7 @@ public interface UserMapper {
 
 	List<User> getByUserName(String userName);
 
-	PageList<User> getByUserName(@Param("userName") String userName, Page page);
+	PageList<User> getByUserName(String userName, Page page);
 
 	List<User> getByUserName(@Param("userName") String userName, Limit limit);
 

@@ -45,6 +45,8 @@ public class MybatisTest {
 	public void testSelect() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		userMapper.insert(user);
 		List<User> users = userMapper.getByUserName("user");
 		sqlSession.commit();
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
@@ -55,7 +57,9 @@ public class MybatisTest {
 	public void testDelete() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-		int result = userMapper.delete(1);
+		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		userMapper.insert(user);
+		int result = userMapper.delete(user.getId());
 		sqlSession.commit();
 		Assert.assertTrue("通过id删除成功", result >= 0);
 	}
@@ -64,9 +68,11 @@ public class MybatisTest {
 	public void testDeleteByUserName() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		userMapper.insert(user);
 		int result = userMapper.deleteByUserName("user");
 		sqlSession.commit();
-		Assert.assertTrue("通过名称删除成功", result >= 0);
+		Assert.assertTrue("通过名称删除成功", result > 0);
 	}
 
 }
