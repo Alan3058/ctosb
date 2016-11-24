@@ -1,6 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'maven'
 
 repositories {
+    mavenLocal()
     maven{
     	url "http://maven.aliyun.com/nexus/content/groups/public"
     }
@@ -17,7 +19,7 @@ dependencies {
 		'org.mybatis:mybatis-spring:1.2.2',
 		'com.alibaba:druid:1.0.20',
 		
-		'org.apache.logging.log4j:log4j-core:2.7',
+		'org.apache.logging.log4j:log4j-core:2.6',
 		'org.apache.logging.log4j:log4j-slf4j-impl:2.7',
 		
 				
@@ -31,6 +33,14 @@ dependencies {
 
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
+}
+
+install {
+	repositories.mavenInstaller{
+		pom.groupId='com.ctosb'
+		pom.artifactId='ctosb-core'
+		pom.version='0.0.1-SNAPSHOT'
+	}
 }
 
 jar{
