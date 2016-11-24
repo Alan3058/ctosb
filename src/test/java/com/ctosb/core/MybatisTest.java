@@ -34,10 +34,7 @@ public class MybatisTest {
 	public void testInsert() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-		User user = new User();
-		user.setAge(18);
-		user.setUserName("user");
-		user.setPassword("test");
+		User user = new User().setAge(28).setUserName("user").setPassword("test");
 		int result = userMapper.insert(user);
 		sqlSession.commit();
 		Assert.assertTrue("获取id成功，id=" + user.getId(), user.getId() != null);
@@ -60,7 +57,7 @@ public class MybatisTest {
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 		int result = userMapper.delete(1);
 		sqlSession.commit();
-		Assert.assertTrue("通过id删除成功", result > 0);
+		Assert.assertTrue("通过id删除成功", result >= 0);
 	}
 
 	@Test
@@ -69,7 +66,7 @@ public class MybatisTest {
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 		int result = userMapper.deleteByUserName("user");
 		sqlSession.commit();
-		Assert.assertTrue("通过名称删除成功", result > 0);
+		Assert.assertTrue("通过名称删除成功", result >= 0);
 	}
 
 }
