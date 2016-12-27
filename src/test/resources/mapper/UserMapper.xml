@@ -8,15 +8,15 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into
-		user(id,user_name,password,age)
-		values(#{id},#{userName},#{password},#{age})
+		user(id,user_name,password)
+		values(#{id},#{userName},#{password})
 	</insert>
 	<insert id="insertAll">
 		insert into
-		user(id,user_name,password,age)
+		user(id,user_name,password)
 		values
 		<foreach collection="list" item="item" separator=",">
-			(#{item.id},#{item.userName},#{item.password},#{item.age})
+			(#{item.id},#{item.userName},#{item.password})
 		</foreach>
 	</insert>
 

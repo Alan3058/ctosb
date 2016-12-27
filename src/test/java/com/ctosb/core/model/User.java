@@ -5,7 +5,6 @@ public class User {
 	private Integer id;
 	private String userName;
 	private String password;
-	private Integer age;
 
 	public Integer getId() {
 		return id;
@@ -31,15 +30,6 @@ public class User {
 
 	public User setPassword(String password) {
 		this.password = password;
-		return this;
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
-	public User setAge(Integer age) {
-		this.age = age;
 		return this;
 	}
 

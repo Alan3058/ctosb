@@ -33,6 +33,7 @@ import com.ctosb.core.util.PageUtil;
 public class PageInterceptor implements Interceptor {
 
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object intercept(Invocation invocation) throws Throwable {
 		Executor executor = (Executor) invocation.getTarget();
 		// get MappedStatement instance param

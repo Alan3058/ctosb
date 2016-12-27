@@ -34,7 +34,7 @@ public class MybatisTest {
 	public void testInsert() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		int result = userMapper.insert(user);
 		sqlSession.commit();
 		Assert.assertTrue("获取id成功，id=" + user.getId(), user.getId() != null);
@@ -45,7 +45,7 @@ public class MybatisTest {
 	public void testSelect() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		List<User> users = userMapper.getByUserName("user");
 		sqlSession.commit();
@@ -57,7 +57,7 @@ public class MybatisTest {
 	public void testDelete() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		int result = userMapper.delete(user.getId());
 		sqlSession.commit();
@@ -68,7 +68,7 @@ public class MybatisTest {
 	public void testDeleteByUserName() {
 		SqlSession sqlSession = sessionFactory.openSession();
 		UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		int result = userMapper.deleteByUserName("user");
 		sqlSession.commit();

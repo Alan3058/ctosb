@@ -2,7 +2,6 @@ package com.ctosb.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,7 +26,7 @@ public class SpringMybatisTest {
 	@Test
 	public void testInsert() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		int result = userMapper.insert(user);
 		Assert.assertTrue("保存成功", result > 0);
 		Assert.assertTrue("获取id成功，id=" + user.getId(), user.getId() != null);
@@ -38,7 +37,7 @@ public class SpringMybatisTest {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		List<User> users = new ArrayList<User>();
 		for (int i = 0; i < 50; i++) {
-			User user = new User().setAge(new Random().nextInt(100)).setUserName("user").setPassword("test" + i);
+			User user = new User().setUserName("user").setPassword("test" + i);
 			users.add(user);
 		}
 		int result = userMapper.insertAll(users);
@@ -48,7 +47,7 @@ public class SpringMybatisTest {
 	@Test
 	public void testSelect() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		List<User> users = userMapper.get(new Page(1, 2));
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
@@ -59,7 +58,7 @@ public class SpringMybatisTest {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		List<User> newUsers = new ArrayList<User>();
 		for (int i = 0; i < 50; i++) {
-			User user = new User().setAge(new Random().nextInt(100)).setUserName("user").setPassword("test" + i);
+			User user = new User().setUserName("user").setPassword("test" + i);
 			newUsers.add(user);
 		}
 		userMapper.insertAll(newUsers);
@@ -70,7 +69,7 @@ public class SpringMybatisTest {
 	@Test
 	public void testSelectByUserName() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		List<User> users = userMapper.getByUserName("user", new Page(1, 10));
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
@@ -79,7 +78,7 @@ public class SpringMybatisTest {
 	@Test
 	public void testDelete() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		int result = userMapper.delete(user.getId());
 		Assert.assertTrue("通过id删除成功", result > 0);
@@ -88,7 +87,7 @@ public class SpringMybatisTest {
 	@Test
 	public void testDeleteByUserName() {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
-		User user = new User().setAge(28).setUserName("user").setPassword("test");
+		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
 		int result = userMapper.deleteByUserName("user");
 		Assert.assertTrue("通过名称删除成功", result > 0);
