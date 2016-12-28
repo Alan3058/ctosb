@@ -17,7 +17,7 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
 
-import com.ctosb.core.mybatis.Page;
+import com.ctosb.core.mybatis.page.Page;
 import com.ctosb.core.util.PageUtil;
 import com.ctosb.core.util.ReflectUtil;
 

@@ -1,4 +1,4 @@
-package com.ctosb.core.mybatis;
+package com.ctosb.core.mybatis.page;
 
 import java.io.Serializable;
 

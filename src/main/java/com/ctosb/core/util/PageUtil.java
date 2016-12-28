@@ -1,11 +1,14 @@
 package com.ctosb.core.util;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 
-import com.ctosb.core.mybatis.Limit;
-import com.ctosb.core.mybatis.Page;
 import com.ctosb.core.mybatis.dialet.DialetFactory;
+import com.ctosb.core.mybatis.page.Limit;
+import com.ctosb.core.mybatis.page.Page;
+import com.ctosb.core.mybatis.sort.Sort;
 
 public class PageUtil {
 	/**
@@ -32,6 +35,42 @@ public class PageUtil {
 			object = parameterObj;
 		}
 		return object;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Object getSort(Object parameterObj) {
+		Collection<Sort> sorts = new HashSet<Sort>();
+		// extract the sort object from the input param
+		if (Map.class.isInstance(parameterObj)) {
+			//if  the param is Map,then loop its value
+			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObj);
+			Collection<?> values = parameterMap.values();
+			for (Object obj : values) {
+				if (Sort.class.isInstance(obj)) {
+					//process sort object
+					sorts.add((Sort) obj);
+				} else if (obj.getClass().isArray() && Sort.class.isAssignableFrom(obj.getClass().getComponentType())) {
+					//process sort array
+					Collections.addAll(sorts, (Sort[]) obj);
+				} else if (Collection.class.isAssignableFrom(obj.getClass())
+						&& Sort.class.isAssignableFrom(obj.getClass().getGenericSuperclass().getClass())) {
+					//process sort collection
+					sorts.addAll((Collection<Sort>) obj);
+				}
+			}
+		} else if (Sort.class.isInstance(parameterObj)) {
+			//process sort object
+			sorts.add((Sort) parameterObj);
+		} else if (parameterObj.getClass().isArray()
+				&& Sort.class.isAssignableFrom(parameterObj.getClass().getComponentType())) {
+			//process sort array
+			Collections.addAll(sorts, (Sort[]) parameterObj);
+		} else if (Collection.class.isAssignableFrom(parameterObj.getClass())
+				&& Sort.class.isAssignableFrom(parameterObj.getClass().getGenericSuperclass().getClass())) {
+			//process sort collection
+			sorts.addAll((Collection<Sort>) parameterObj);
+		}
+		return sorts;
 	}
 
 	/**
@@ -70,6 +109,24 @@ public class PageUtil {
 	 */
 	public static String getCountSql(String sql, String dbType) {
 		return DialetFactory.getLimit(dbType).getCountSql(sql);
+	}
+
+	/**
+	 * get sort sql
+	 * 
+	 * @param sql
+	 * @param dbType
+	 * @param sorts
+	 * @return
+	 * @author Alan
+	 * @createTime 2015年12月12日 下午1:22:05
+	 */
+	public static String getSortSql(String sql, String dbType, Collection<Sort> sorts) {
+		// if the paging object is null，return source sql
+		if (sorts == null || sorts.isEmpty()) {
+			return sql;
+		}
+		return DialetFactory.getLimit(dbType).getSortSql(sql, sorts);
 	}
 
 	/**

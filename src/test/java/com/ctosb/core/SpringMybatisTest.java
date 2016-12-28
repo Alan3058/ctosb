@@ -11,8 +11,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.ctosb.core.mapper.UserMapper;
 import com.ctosb.core.model.User;
-import com.ctosb.core.mybatis.Limit;
-import com.ctosb.core.mybatis.Page;
+import com.ctosb.core.mybatis.page.Limit;
+import com.ctosb.core.mybatis.page.Page;
+import com.ctosb.core.mybatis.sort.Sort;
+import com.ctosb.core.mybatis.sort.SortType;
 
 public class SpringMybatisTest {
 
@@ -49,7 +51,7 @@ public class SpringMybatisTest {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
-		List<User> users = userMapper.get(new Page(1, 2));
+		List<User> users = userMapper.get(new Page(1, 2),new Sort("id",SortType.ASC));
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
 	}
 

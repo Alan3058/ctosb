@@ -22,9 +22,9 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import com.ctosb.core.mybatis.Limit;
-import com.ctosb.core.mybatis.Page;
-import com.ctosb.core.mybatis.PageList;
+import com.ctosb.core.mybatis.page.Limit;
+import com.ctosb.core.mybatis.page.Page;
+import com.ctosb.core.mybatis.page.PageList;
 import com.ctosb.core.util.MybatisUtil;
 import com.ctosb.core.util.PageUtil;
 
@@ -44,25 +44,34 @@ public class PageInterceptor implements Interceptor {
 		Configuration configuration = mappedStatement.getConfiguration();
 		// get paging or limit infomation
 		Object pageOrLimit = PageUtil.getPageOrLimit(parameterObject);
+		Collection sorts = (Collection) PageUtil.getSort(parameterObject);
+		// get boundsql object
+		BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 		if (pageOrLimit == null) {
+			if (sorts != null && sorts.size() > 0) {
+				String sql = PageUtil.getSortSql(boundSql.getSql(), configuration.getDatabaseId(), sorts);
+				invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(sql, boundSql, mappedStatement);
+			}
 			return invocation.proceed();
 		}
 		parameterObject = extractParameterObject(parameterObject);
 		invocation.getArgs()[1] = parameterObject;
-		// get boundsql object
-		BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 
+		String sql = boundSql.getSql();
 		if (pageOrLimit instanceof Page) {
 			Page page = (Page) pageOrLimit;
 			// 1.execute count sql
 			// convert countSql
-			String countSql = PageUtil.getCountSql(boundSql.getSql(), configuration.getDatabaseId());
+			String countSql = PageUtil.getCountSql(sql, configuration.getDatabaseId());
 			// execute count sql
 			int count = executeCountSql(mappedStatement, executor.getTransaction().getConnection(), parameterObject,
 					countSql);
+			if (sorts != null && sorts.size() > 0) {
+				sql = PageUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
+			}
 			// 2.execute limit sql
 			// convert limit sql
-			String limitSql = PageUtil.getLimitSql(boundSql.getSql(), page, configuration.getDatabaseId());
+			String limitSql = PageUtil.getLimitSql(sql, page, configuration.getDatabaseId());
 			// copy a new MappedStatement instance
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 			// excute limit sql
@@ -77,7 +86,10 @@ public class PageInterceptor implements Interceptor {
 			Limit limit = (Limit) pageOrLimit;
 			// 1.execute limit sql
 			// convert limit sql
-			String limitSql = PageUtil.getLimitSql(boundSql.getSql(), limit, configuration.getDatabaseId());
+			if (sorts != null && sorts.size() > 0) {
+				sql = PageUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
+			}
+			String limitSql = PageUtil.getLimitSql(sql, limit, configuration.getDatabaseId());
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 		}
 		return invocation.proceed();
@@ -97,16 +109,20 @@ public class PageInterceptor implements Interceptor {
 			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObject);
 			if (parameterMap.size() == 4) {
 				// this method have two parameter
-				if(parameterMap.containsKey("0")&& parameterMap.containsKey("1")){
-					//the two parameter has not Param annotation
+				if (parameterMap.containsKey("0") && parameterMap.containsKey("1")) {
+					// the two parameter has not Param annotation
 					Object param1 = parameterMap.get("0");
 					Object param2 = parameterMap.get("1");
 					if (PageUtil.isPageOrLimit(param2)) {
-						//the second parameter is page or limit type,and the first parameter has not Param annotation,then return the first parameter
+						// the second parameter is page or limit type,and the
+						// first parameter has not Param annotation,then return
+						// the first parameter
 						return param1;
 					}
 					if (PageUtil.isPageOrLimit(param1)) {
-						//the first parameter is page or limit type,and the second parameter has not Param annotation,then return the second parameter
+						// the first parameter is page or limit type,and the
+						// second parameter has not Param annotation,then return
+						// the second parameter
 						return param2;
 					}
 				}

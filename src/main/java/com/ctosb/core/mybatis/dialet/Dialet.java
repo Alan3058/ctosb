@@ -1,5 +1,9 @@
 package com.ctosb.core.mybatis.dialet;
 
+import java.util.Collection;
+
+import com.ctosb.core.mybatis.sort.Sort;
+
 public interface Dialet {
 
 	/**
@@ -23,4 +27,14 @@ public interface Dialet {
 	 * @date 2016年6月30日 下午2:37:22
 	 */
 	String getCountSql(String sql);
+	
+	/**
+	 * get count sql
+	 * 
+	 * @param sql
+	 * @return
+	 * @author Alan
+	 * @date 2016年6月30日 下午2:37:22
+	 */
+	String getSortSql(String sql,Collection<Sort> sorts);
 }
