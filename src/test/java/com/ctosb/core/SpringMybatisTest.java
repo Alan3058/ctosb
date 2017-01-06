@@ -51,7 +51,7 @@ public class SpringMybatisTest {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
-		List<User> users = userMapper.get(new Page(1, 2),new Sort("id",SortType.ASC));
+		List<User> users = userMapper.get(new Page(1, 2));
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
 	}
 
@@ -73,7 +73,7 @@ public class SpringMybatisTest {
 		UserMapper userMapper = applicationContext.getBean(UserMapper.class);
 		User user = new User().setUserName("user").setPassword("test");
 		userMapper.insert(user);
-		List<User> users = userMapper.getByUserName("user", new Page(1, 10));
+		List<User> users = userMapper.getByUserName("user", new Page(1, 10),new Sort []{new Sort("id",SortType.ASC)});
 		Assert.assertTrue("查询成功", users != null && users.size() > 0);
 	}
 

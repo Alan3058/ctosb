@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.Executor;
@@ -26,7 +25,7 @@ import com.ctosb.core.mybatis.page.Limit;
 import com.ctosb.core.mybatis.page.Page;
 import com.ctosb.core.mybatis.page.PageList;
 import com.ctosb.core.util.MybatisUtil;
-import com.ctosb.core.util.PageUtil;
+import com.ctosb.core.util.ProcessUtil;
 
 @Intercepts({ @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
 		RowBounds.class, ResultHandler.class, }) })
@@ -43,35 +42,35 @@ public class PageInterceptor implements Interceptor {
 		// get mybatis configuration object
 		Configuration configuration = mappedStatement.getConfiguration();
 		// get paging or limit infomation
-		Object pageOrLimit = PageUtil.getPageOrLimit(parameterObject);
-		Collection sorts = (Collection) PageUtil.getSort(parameterObject);
+		Object pageOrLimit = ProcessUtil.getPageOrLimit(parameterObject);
+		Collection sorts = (Collection) ProcessUtil.getSort(parameterObject);
+		parameterObject = ProcessUtil.extractParameterObject(parameterObject);
+		invocation.getArgs()[1] = parameterObject;
 		// get boundsql object
 		BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 		if (pageOrLimit == null) {
 			if (sorts != null && sorts.size() > 0) {
-				String sql = PageUtil.getSortSql(boundSql.getSql(), configuration.getDatabaseId(), sorts);
+				String sql = ProcessUtil.getSortSql(boundSql.getSql(), configuration.getDatabaseId(), sorts);
 				invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(sql, boundSql, mappedStatement);
 			}
 			return invocation.proceed();
 		}
-		parameterObject = extractParameterObject(parameterObject);
-		invocation.getArgs()[1] = parameterObject;
 
 		String sql = boundSql.getSql();
 		if (pageOrLimit instanceof Page) {
 			Page page = (Page) pageOrLimit;
 			// 1.execute count sql
 			// convert countSql
-			String countSql = PageUtil.getCountSql(sql, configuration.getDatabaseId());
+			String countSql = ProcessUtil.getCountSql(sql, configuration.getDatabaseId());
 			// execute count sql
 			int count = executeCountSql(mappedStatement, executor.getTransaction().getConnection(), parameterObject,
 					countSql);
 			if (sorts != null && sorts.size() > 0) {
-				sql = PageUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
+				sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
 			}
 			// 2.execute limit sql
 			// convert limit sql
-			String limitSql = PageUtil.getLimitSql(sql, page, configuration.getDatabaseId());
+			String limitSql = ProcessUtil.getLimitSql(sql, page, configuration.getDatabaseId());
 			// copy a new MappedStatement instance
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 			// excute limit sql
@@ -87,9 +86,9 @@ public class PageInterceptor implements Interceptor {
 			// 1.execute limit sql
 			// convert limit sql
 			if (sorts != null && sorts.size() > 0) {
-				sql = PageUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
+				sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
 			}
-			String limitSql = PageUtil.getLimitSql(sql, limit, configuration.getDatabaseId());
+			String limitSql = ProcessUtil.getLimitSql(sql, limit, configuration.getDatabaseId());
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 		}
 		return invocation.proceed();
@@ -104,32 +103,7 @@ public class PageInterceptor implements Interceptor {
 	 * @param parameterObject
 	 * @return
 	 */
-	private Object extractParameterObject(Object parameterObject) {
-		if (Map.class.isInstance(parameterObject)) {
-			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObject);
-			if (parameterMap.size() == 4) {
-				// this method have two parameter
-				if (parameterMap.containsKey("0") && parameterMap.containsKey("1")) {
-					// the two parameter has not Param annotation
-					Object param1 = parameterMap.get("0");
-					Object param2 = parameterMap.get("1");
-					if (PageUtil.isPageOrLimit(param2)) {
-						// the second parameter is page or limit type,and the
-						// first parameter has not Param annotation,then return
-						// the first parameter
-						return param1;
-					}
-					if (PageUtil.isPageOrLimit(param1)) {
-						// the first parameter is page or limit type,and the
-						// second parameter has not Param annotation,then return
-						// the second parameter
-						return param2;
-					}
-				}
-			}
-		}
-		return parameterObject;
-	}
+	
 
 	/**
 	 * execute count sql

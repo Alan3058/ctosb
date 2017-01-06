@@ -18,7 +18,7 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
 
 import com.ctosb.core.mybatis.page.Page;
-import com.ctosb.core.util.PageUtil;
+import com.ctosb.core.util.ProcessUtil;
 import com.ctosb.core.util.ReflectUtil;
 
 /**
@@ -44,9 +44,9 @@ public class LimitInterceptor implements Interceptor {
 		// get boundsql object
 		BoundSql boundSql = handler.getBoundSql();
 		// get paging infomation
-		Page page = PageUtil.getPage(boundSql.getParameterObject());
+		Page page = ProcessUtil.getPage(boundSql.getParameterObject());
 		// join paging sql
-		String sql = PageUtil.getLimitSql(boundSql.getSql(), page, configuration.getDatabaseId());
+		String sql = ProcessUtil.getLimitSql(boundSql.getSql(), page, configuration.getDatabaseId());
 		// write back set sql to boundsql object
 		ReflectUtil.setFieldValue(boundSql, "sql", sql);
 		return invocation.proceed();
