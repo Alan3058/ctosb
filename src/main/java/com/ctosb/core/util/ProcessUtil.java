@@ -52,11 +52,11 @@ public class ProcessUtil {
 				} else if (Sort[].class.isInstance(obj)) {
 					//process sort array
 					Collections.addAll(sorts, (Sort[]) obj);
-				} else if (Collection.class.isAssignableFrom(obj.getClass())
+				} /*else if (Collection.class.isAssignableFrom(obj.getClass())
 						&& Sort.class.isAssignableFrom(obj.getClass().getGenericSuperclass().getClass())) {
 					//process sort collection
 					sorts.addAll((Collection<Sort>) obj);
-				}
+				}*/
 			}
 		} else if (Sort.class.isInstance(parameterObj)) {
 			//process sort object
@@ -64,11 +64,11 @@ public class ProcessUtil {
 		} else if (Sort[].class.isInstance(parameterObj)) {
 			//process sort array
 			Collections.addAll(sorts, (Sort[]) parameterObj);
-		} else if (Collection.class.isAssignableFrom(parameterObj.getClass())
+		}/* else if (Collection.class.isAssignableFrom(parameterObj.getClass())
 				&& Sort.class.isAssignableFrom(parameterObj.getClass().getGenericSuperclass().getClass())) {
 			//process sort collection
 			sorts.addAll((Collection<Sort>) parameterObj);
-		}
+		}*/
 		return sorts;
 	}
 
