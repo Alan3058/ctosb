@@ -84,6 +84,10 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 		this.workerId = workerId;
 		this.datacenterId = datacenterId;
 	}
+	
+	public SnowflakeBuilder(){
+		this(0, 0);
+	}
 
 	// ==============================Methods==========================================
 	/**
@@ -148,11 +152,12 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 	}
 
 	// ==============================Test=============================================
-	/** 测试 */
-	public static void main(String[] args) {
+	/** 测试 
+	 * @throws InterruptedException */
+	public static void main(String[] args) throws InterruptedException {
 		SnowflakeBuilder idWorker = new SnowflakeBuilder(0, 0);
 		Set<Long> set = new HashSet<>();
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 1000; i++) {
 			long id = idWorker.next();
 			set.add(id);
 		}

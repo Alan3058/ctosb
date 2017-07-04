@@ -38,7 +38,7 @@ public class LimitInterceptor implements Interceptor {
 		StatementHandler handler = (StatementHandler) invocation.getTarget();
 		// get metaObject source object
 		MetaObject metaStatementHandler = MetaObject.forObject(handler, DEFAULT_OBJECT_FACTORY,
-				DEFAULT_OBJECT_WRAPPER_FACTORY, null);
+				DEFAULT_OBJECT_WRAPPER_FACTORY);
 		// get mybatis configuration object
 		Configuration configuration = (Configuration) metaStatementHandler.getValue("delegate.configuration");
 		// get boundsql object
