@@ -1,3 +1,4 @@
+
 package com.ctosb.core.generator;
 
 import java.util.HashSet;
@@ -23,54 +24,38 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 	// ==============================Fields===========================================
 	/** 开始时间截 (2017-07-04) */
 	private final long startTime = 1499143428466L;
-
 	/** 机器id所占的位数 */
 	private final long workerIdBits = 5L;
-
 	/** 数据中心标识id所占的位数 */
 	private final long datacenterIdBits = 5L;
-
 	/** 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数) */
 	private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
-
 	/** 支持的最大数据标识id，结果是31 */
 	private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
-
 	/** 序列在id中占的位数 */
 	private final long sequenceBits = 12L;
-
 	/** 机器ID向左移12位 */
 	private final long workerIdShift = sequenceBits;
-
 	/** 数据标识id向左移17位(12+5) */
 	private final long datacenterIdShift = sequenceBits + workerIdBits;
-
 	/** 时间截向左移22位(5+5+12) */
 	private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
-
 	/** 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095) */
 	private final long sequenceMask = -1L ^ (-1L << sequenceBits);
-
 	/** 工作机器ID(0~31) */
 	private long workerId;
-
 	/** 数据中心ID(0~31) */
 	private long datacenterId;
-
 	/** 毫秒内序列(0~4095) */
 	private long sequence = 0L;
-
 	/** 上次生成ID的时间截 */
 	private long lastTimestamp = -1L;
 
 	// ==============================Constructors=====================================
 	/**
 	 * 构造函数
-	 * 
-	 * @param workerId
-	 *            工作ID (0~31)
-	 * @param datacenterId
-	 *            数据中心ID (0~31)
+	 * @param workerId 工作ID (0~31)
+	 * @param datacenterId 数据中心ID (0~31)
 	 */
 	public SnowflakeBuilder(long workerId, long datacenterId) {
 		if (workerId > maxWorkerId || workerId < 0) {
@@ -84,26 +69,23 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 		this.workerId = workerId;
 		this.datacenterId = datacenterId;
 	}
-	
-	public SnowflakeBuilder(){
+
+	public SnowflakeBuilder() {
 		this(0, 0);
 	}
 
 	// ==============================Methods==========================================
 	/**
 	 * 获得下一个ID (该方法是线程安全的)
-	 * 
 	 * @return SnowflakeId
 	 */
 	public synchronized Long next() {
 		long timestamp = currentTimeMills();
-
 		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
 		if (timestamp < lastTimestamp) {
 			throw new RuntimeException(String.format(
 					"Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
 		}
-
 		// 如果是同一时间生成的，则进行毫秒内序列
 		if (lastTimestamp == timestamp) {
 			sequence = (sequence + 1) & sequenceMask;
@@ -116,10 +98,8 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 			// 时间戳改变，毫秒内序列重置
 			sequence = 0L;
 		}
-
 		// 上次生成ID的时间截
 		lastTimestamp = timestamp;
-
 		// 移位并通过或运算拼到一起组成64位的ID
 		return ((timestamp - startTime) << timestampLeftShift) //
 				| (datacenterId << datacenterIdShift) //
@@ -129,9 +109,7 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 
 	/**
 	 * 阻塞到下一个毫秒，直到获得新的时间戳
-	 * 
-	 * @param lastTimestamp
-	 *            上次生成ID的时间截
+	 * @param lastTimestamp 上次生成ID的时间截
 	 * @return 当前时间戳
 	 */
 	protected long tillNextMillis(long lastTimestamp) {
@@ -144,7 +122,6 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 
 	/**
 	 * 返回以毫秒为单位的当前时间
-	 * 
 	 * @return 当前时间(毫秒)
 	 */
 	protected long currentTimeMills() {
@@ -152,8 +129,10 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 	}
 
 	// ==============================Test=============================================
-	/** 测试 
-	 * @throws InterruptedException */
+	/**
+	 * 测试
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		SnowflakeBuilder idWorker = new SnowflakeBuilder(0, 0);
 		Set<Long> set = new HashSet<>();
