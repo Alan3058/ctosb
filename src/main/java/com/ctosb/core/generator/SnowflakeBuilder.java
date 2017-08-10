@@ -135,7 +135,7 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		SnowflakeBuilder idWorker = new SnowflakeBuilder(0, 0);
-		Set<Long> set = new HashSet<>();
+		Set<Long> set = new HashSet<Long>();
 		for (int i = 0; i < 1000; i++) {
 			long id = idWorker.next();
 			set.add(id);
