@@ -79,7 +79,7 @@ public class PageUtil {
 	 * @param parameterObj
 	 * @return
 	 * @author Alan
-	 * @createTime 2015年12月12日 上午8:38:59
+	 * @date 2015年12月12日 上午8:38:59
 	 */
 	public static Page getPage(Object parameterObj) {
 		Page page = null;
@@ -105,7 +105,7 @@ public class PageUtil {
 	 * @param dbType
 	 * @return
 	 * @author Alan
-	 * @createTime 2015年12月12日 下午1:22:05
+	 * @date 2015年12月12日 下午1:22:05
 	 */
 	public static String getCountSql(String sql, String dbType) {
 		return DialetFactory.getLimit(dbType).getCountSql(sql);
@@ -119,7 +119,7 @@ public class PageUtil {
 	 * @param sorts
 	 * @return
 	 * @author Alan
-	 * @createTime 2015年12月12日 下午1:22:05
+	 * @date 2015年12月12日 下午1:22:05
 	 */
 	public static String getSortSql(String sql, String dbType, Collection<Sort> sorts) {
 		// if the paging object is null，return source sql
@@ -137,7 +137,7 @@ public class PageUtil {
 	 * @param dbType
 	 * @return
 	 * @author Alan
-	 * @createTime 2015年12月12日 下午1:22:05
+	 * @date 2015年12月12日 下午1:22:05
 	 */
 	public static String getLimitSql(String sql, Page page, String dbType) {
 		// if the paging object is null，return source sql

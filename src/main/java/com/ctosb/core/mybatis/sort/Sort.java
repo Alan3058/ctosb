@@ -1,20 +1,18 @@
+
 package com.ctosb.core.mybatis.sort;
 
 import java.io.Serializable;
 
 /**
  * sort bean
- * 
  * @author Alan
- *
  */
 public class Sort implements Serializable {
 
 	private static final long serialVersionUID = -1453114764475405942L;
-
-	// sort field name
+	/** sort field name **/
 	private String fieldName;
-	// sort type
+	/** sort type **/
 	private SortType sortType;
 
 	public Sort() {
@@ -46,5 +44,4 @@ public class Sort implements Serializable {
 		this.sortType = sortType;
 		return this;
 	}
-
 }

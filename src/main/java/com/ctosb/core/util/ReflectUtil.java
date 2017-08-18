@@ -17,7 +17,7 @@ public class ReflectUtil {
      * @param fieldName
      * @return
      * @author Alan
-     * @createTime 2015年12月15日 下午10:04:29
+     * @date 2015年12月15日 下午10:04:29
      */
     public static Object getFieldValue(Object target, String fieldName) {
         Object result = null;
@@ -42,7 +42,7 @@ public class ReflectUtil {
      * @param fieldName
      * @param fieldValue
      * @author Alan
-     * @createTime 2015年12月15日 下午10:05:18
+     * @date 2015年12月15日 下午10:05:18
      */
     public static void setFieldValue(Object target, String fieldName, String fieldValue) {
         Field field = ReflectUtil.getField(target, fieldName);
@@ -65,7 +65,7 @@ public class ReflectUtil {
      * @param fieldName
      * @return
      * @author Alan
-     * @createTime 2015年12月15日 下午10:04:56
+     * @date 2015年12月15日 下午10:04:56
      */
     private static Field getField(Object target, String fieldName) {
         Field field = null;

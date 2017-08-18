@@ -14,7 +14,7 @@ public interface Dialet {
 	 * @param limit
 	 * @return
 	 * @author Alan
-	 * @createTime 2015年12月10日 下午11:25:19
+	 * @date 2015年12月10日 下午11:25:19
 	 */
 	String getLimitSql(String sql, int offset, int limit);
 

@@ -8,5 +8,12 @@ package com.ctosb.core.generator;
  */
 public interface NumberBuilder<T> {
 
+	/**
+	 * get next sequence number
+	 * @date 2017年8月18日下午3:13:52
+	 * @author liliangang
+	 * @since 1.0.0 
+	 * @return
+	 */
 	T next();
 }

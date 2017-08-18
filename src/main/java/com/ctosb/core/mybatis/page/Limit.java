@@ -1,12 +1,11 @@
+
 package com.ctosb.core.mybatis.page;
 
 import java.io.Serializable;
 
 /**
  * limit bean
- * 
  * @author Alan
- *
  */
 public class Limit implements Serializable {
 
@@ -14,10 +13,9 @@ public class Limit implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 4686942205685362061L;
-
-	// offset,default value 0
+	/** offset,default value 0 **/
 	private int offset;
-	// count,default value 50
+	/** count,default value 50 **/
 	private int count;
 
 	public Limit() {
@@ -50,5 +48,4 @@ public class Limit implements Serializable {
 		this.count = count;
 		return this;
 	}
-
 }

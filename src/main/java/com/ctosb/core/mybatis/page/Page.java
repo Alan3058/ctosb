@@ -1,28 +1,25 @@
+
 package com.ctosb.core.mybatis.page;
 
 import java.io.Serializable;
 
 /**
  * paging bean
- * 
  * @author Alan
- *
  */
 public class Page implements Serializable {
 
 	private static final long serialVersionUID = -6153586095524896492L;
-
-	// current page number,default value 1
+	/** current page number,default value 1 **/
 	private int pageNum = 1;
-	// the row max count of percent page,default value 50
+	/** the row max count of percent page,default value 50 **/
 	private int pageSize = 50;
-	// the quantity of total record
+	/** the quantity of total record **/
 	private int totalRecord = 0;
-	// the quantity of total page
+	/** the quantity of total page **/
 	private int totalPage = 0;
 
 	public Page() {
-
 	}
 
 	public Page(int pageNum, int pageSize) {
@@ -69,5 +66,4 @@ public class Page implements Serializable {
 		this.totalPage = totalPage;
 		return this;
 	}
-
 }
