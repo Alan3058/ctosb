@@ -1,3 +1,4 @@
+
 package com.ctosb.core.mybatis.interceptor;
 
 import java.sql.Connection;
@@ -27,6 +28,12 @@ import com.ctosb.core.mybatis.page.PageList;
 import com.ctosb.core.util.MybatisUtil;
 import com.ctosb.core.util.ProcessUtil;
 
+/**
+ * PageInterceptor
+ * @date 2016年6月30日 下午9:11:14
+ * @author alan
+ * @since 1.0.0
+ */
 @Intercepts({ @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
 		RowBounds.class, ResultHandler.class, }) })
 public class PageInterceptor implements Interceptor {
@@ -55,7 +62,6 @@ public class PageInterceptor implements Interceptor {
 			}
 			return invocation.proceed();
 		}
-
 		String sql = boundSql.getSql();
 		if (pageOrLimit instanceof Page) {
 			Page page = (Page) pageOrLimit;
@@ -99,15 +105,11 @@ public class PageInterceptor implements Interceptor {
 	 * extract only one paramter that have not param annotation。<br/>
 	 * for this example get(User,Page); ==> User <br>
 	 * get(@Param("user")User,Page); ==>don't anything
-	 * 
 	 * @param parameterObject
 	 * @return
 	 */
-	
-
 	/**
 	 * execute count sql
-	 * 
 	 * @param mappedStatement
 	 * @param connection
 	 * @param parameterObject
@@ -126,7 +128,6 @@ public class PageInterceptor implements Interceptor {
 
 	/**
 	 * execute count sql
-	 * 
 	 * @param mappedStatement
 	 * @param connection
 	 * @param parameterObject
@@ -163,5 +164,4 @@ public class PageInterceptor implements Interceptor {
 	public void setProperties(Properties properties) {
 		// used specigy property of the outer properties config file
 	}
-
 }

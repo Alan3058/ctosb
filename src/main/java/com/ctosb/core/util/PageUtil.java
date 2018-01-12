@@ -7,12 +7,18 @@ import com.ctosb.core.mybatis.page.Page;
 import com.ctosb.core.mybatis.page.PageInfo;
 import com.ctosb.core.mybatis.page.PageList;
 
+/**
+ * page util
+ * @date 2018/1/12 17:14
+ * @author alan
+ * @since 1.0.0
+ */
 public class PageUtil {
 
 	/**
 	 * pageList convert pageInfo
 	 * @date 2018/1/12 17:14
-	 * @author liliangang-1163
+	 * @author alan
 	 * @since 1.0.0
 	 * @param pageList
 	 * @return
@@ -28,7 +34,7 @@ public class PageUtil {
 	/**
 	 * pageList convert pageInfo
 	 * @date 2018/1/12 17:15
-	 * @author liliangang-1163
+	 * @author alan
 	 * @since 1.0.0
 	 * @param pageList
 	 * @param data

@@ -1,3 +1,4 @@
+
 package com.ctosb.core.util;
 
 import org.apache.ibatis.mapping.BoundSql;
@@ -5,13 +6,18 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.session.Configuration;
 
+/**
+ * MybatisUtil
+ * @date 2016年6月30日 下午9:11:14
+ * @author alan
+ * @since 1.0.0
+ */
 public class MybatisUtil {
 
 	private static final String SPLIT = ",";
 
 	/**
 	 * copy a new mappedStatement instance
-	 * 
 	 * @param sql
 	 * @param boundSql
 	 * @param mappedStatement
@@ -28,7 +34,6 @@ public class MybatisUtil {
 
 	/**
 	 * copy a new mappedStatement instance
-	 * 
 	 * @param mappedStatement
 	 * @param boundSql
 	 * @return
@@ -38,6 +43,7 @@ public class MybatisUtil {
 	private static MappedStatement createNewMappedStatement(MappedStatement mappedStatement, final BoundSql boundSql) {
 		// build SqlSource instance
 		SqlSource sqlSource = new SqlSource() {
+
 			@Override
 			public BoundSql getBoundSql(Object parameterObject) {
 				return boundSql;
@@ -64,14 +70,12 @@ public class MybatisUtil {
 		builder.cache(mappedStatement.getCache());
 		builder.flushCacheRequired(mappedStatement.isFlushCacheRequired());
 		builder.useCache(mappedStatement.isUseCache());
-
 		// build MappedStatement instance
 		return builder.build();
 	}
 
 	/**
 	 * create a new boundSql instance
-	 * 
 	 * @param configuration
 	 * @param sql
 	 * @param boundSql

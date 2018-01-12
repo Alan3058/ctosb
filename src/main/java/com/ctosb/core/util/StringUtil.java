@@ -1,10 +1,16 @@
+
 package com.ctosb.core.util;
 
+/**
+ * string util
+ * @date 2016年6月30日 下午9:13:51
+ * @author alan
+ * @since 1.0.0
+ */
 public class StringUtil {
 
 	/**
 	 * merge string array
-	 * 
 	 * @param strings
 	 * @param split
 	 * @return

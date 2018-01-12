@@ -1,3 +1,4 @@
+
 package com.ctosb.core.mybatis;
 
 import java.io.IOException;
@@ -7,6 +8,12 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.ctosb.core.mybatis.interceptor.PageInterceptor;
 
+/**
+ * custom SqlSessionFactoryBean
+ * @date 2016年6月30日 下午9:11:14
+ * @author alan
+ * @since 1.0.0
+ */
 public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryBean {
 
 	@Override
@@ -20,8 +27,6 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
 		configuration.setUseGeneratedKeys(true);
 		// add the paging interceptor
 		configuration.addInterceptor(new PageInterceptor());
-		// configuration.addInterceptor(new LimitInterceptor());
 		return sqlSessionFactory;
 	}
-
 }

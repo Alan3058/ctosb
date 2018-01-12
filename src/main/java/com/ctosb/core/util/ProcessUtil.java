@@ -1,3 +1,4 @@
+
 package com.ctosb.core.util;
 
 import java.util.Collection;
@@ -10,10 +11,16 @@ import com.ctosb.core.mybatis.page.Limit;
 import com.ctosb.core.mybatis.page.Page;
 import com.ctosb.core.mybatis.sort.Sort;
 
+/**
+ * ProcessUtil
+ * @date 2016年6月30日 下午9:11:14
+ * @author alan
+ * @since 1.0.0
+ */
 public class ProcessUtil {
+
 	/**
 	 * get page or limit instance from paramterObject
-	 * 
 	 * @param parameterObj
 	 * @return
 	 * @author Alan
@@ -42,39 +49,39 @@ public class ProcessUtil {
 		Collection<Sort> sorts = new HashSet<Sort>();
 		// extract the sort object from the input param
 		if (Map.class.isInstance(parameterObj)) {
-			//if  the param is Map,then loop its value
+			// if the param is Map,then loop its value
 			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObj);
 			Collection<?> values = parameterMap.values();
 			for (Object obj : values) {
 				if (Sort.class.isInstance(obj)) {
-					//process sort object
+					// process sort object
 					sorts.add((Sort) obj);
 				} else if (Sort[].class.isInstance(obj)) {
-					//process sort array
+					// process sort array
 					Collections.addAll(sorts, (Sort[]) obj);
-				} /*else if (Collection.class.isAssignableFrom(obj.getClass())
-						&& Sort.class.isAssignableFrom(obj.getClass().getGenericSuperclass().getClass())) {
-					//process sort collection
-					sorts.addAll((Collection<Sort>) obj);
-				}*/
+				} /*
+					 * else if (Collection.class.isAssignableFrom(obj.getClass()) &&
+					 * Sort.class.isAssignableFrom(obj.getClass().getGenericSuperclass().getClass())
+					 * ) { //process sort collection sorts.addAll((Collection<Sort>) obj); }
+					 */
 			}
 		} else if (Sort.class.isInstance(parameterObj)) {
-			//process sort object
+			// process sort object
 			sorts.add((Sort) parameterObj);
 		} else if (Sort[].class.isInstance(parameterObj)) {
-			//process sort array
+			// process sort array
 			Collections.addAll(sorts, (Sort[]) parameterObj);
-		}/* else if (Collection.class.isAssignableFrom(parameterObj.getClass())
-				&& Sort.class.isAssignableFrom(parameterObj.getClass().getGenericSuperclass().getClass())) {
-			//process sort collection
-			sorts.addAll((Collection<Sort>) parameterObj);
-		}*/
+		} /*
+			 * else if (Collection.class.isAssignableFrom(parameterObj.getClass()) &&
+			 * Sort.class.isAssignableFrom(parameterObj.getClass().getGenericSuperclass().
+			 * getClass())) { //process sort collection sorts.addAll((Collection<Sort>)
+			 * parameterObj); }
+			 */
 		return sorts;
 	}
 
 	/**
 	 * get paging infomation
-	 * 
 	 * @param parameterObj
 	 * @return
 	 * @author Alan
@@ -98,7 +105,6 @@ public class ProcessUtil {
 
 	/**
 	 * get count sql
-	 * 
 	 * @param sql
 	 * @param dbType
 	 * @return
@@ -111,7 +117,6 @@ public class ProcessUtil {
 
 	/**
 	 * get sort sql
-	 * 
 	 * @param sql
 	 * @param dbType
 	 * @param sorts
@@ -129,7 +134,6 @@ public class ProcessUtil {
 
 	/**
 	 * get limit sql
-	 * 
 	 * @param sql
 	 * @param page
 	 * @param dbType
@@ -151,7 +155,6 @@ public class ProcessUtil {
 
 	/**
 	 * get limit sql
-	 * 
 	 * @param sql
 	 * @param limit
 	 * @param dbType
@@ -171,46 +174,49 @@ public class ProcessUtil {
 
 	/**
 	 * if object is Page or Limit,return true
-	 * 
 	 * @param object
 	 * @return
 	 */
 	public static boolean isPageOrLimit(Object object) {
 		return Page.class.isInstance(object) || Limit.class.isInstance(object);
 	}
+
 	/**
-	 * extract Param for parameter object. if the parameter object only include one param of not annotation, 
-	 * exclude page、limit、sort、sort array、sort collection.
+	 * extract Param for parameter object. if the parameter object only include one
+	 * param of not annotation, exclude page、limit、sort、sort array、sort collection.
 	 * @param parameterObject
 	 * @return
 	 */
 	public static Object extractParameterObject(Object parameterObject) {
+		// parameterObject contain repeat parameter,so need wipe repeat
+		int repeatNum = 2;
 		if (Map.class.isInstance(parameterObject)) {
 			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObject);
 			int paramNum = parameterMap.size();
-			for (int i = 0; i < paramNum / 2; i++) {
+			for (int i = 0; i < paramNum / repeatNum; i++) {
 				if (!parameterMap.containsKey(i + "")) {
-					//param contain annotation, return origin param
+					// param contain annotation, return origin param
 					return parameterMap;
 				}
 			}
 			Object tmpParam = null;
-			for (int i = 0; i < paramNum / 2; i++) {
-				Object param = parameterMap.get(i+"");
+			for (int i = 0; i < paramNum / repeatNum; i++) {
+				Object param = parameterMap.get(i + "");
 				if (!((ProcessUtil.isPageOrLimit(param) || Sort.class.isInstance(param)
-					    ||Sort[].class.isInstance(param)
-						|| (Collection.class.isAssignableFrom(param.getClass()) && Sort.class
-								.isAssignableFrom(param.getClass().getGenericSuperclass().getClass()))))) {
-					if(tmpParam!=null){
-						//exclude param of page、 limit、 sort、 sort array、 sort collection,there are two or more param,return origin param
+						|| Sort[].class.isInstance(param) || (Collection.class.isAssignableFrom(param.getClass())
+								&& Sort.class.isAssignableFrom(param.getClass().getGenericSuperclass().getClass()))))) {
+					if (tmpParam != null) {
+						// exclude param of page、 limit、 sort、 sort array、 sort collection,there are two
+						// or more param,return origin param
 						return parameterMap;
-					}else{
+					} else {
 						tmpParam = param;
 					}
 				}
 			}
-			if(tmpParam != null){
-				//exclude param of page、 limit、 sort、 sort array、 sort collection,there is a param only, return this param。
+			if (tmpParam != null) {
+				// exclude param of page、 limit、 sort、 sort array、 sort collection,there is a
+				// param only, return this param。
 				return tmpParam;
 			}
 		}
