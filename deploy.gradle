@@ -4,7 +4,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 def isReleaseBuild() {
-    return VERSION_NAME.contains("SNAPSHOT") == false
+    return project.version.contains("SNAPSHOT") == false
 }
 
 def getReleaseRepositoryUrl() {
@@ -79,7 +79,7 @@ private configurePOM(def pom) {
     pom.project {
         groupId POM_GROUP_ID
         artifactId POM_ARTIFACT_ID
-        version VERSION_NAME
+        version project.version
         name POM_NAME
         packaging POM_PACKAGING
         description POM_DESCRIPTION
