@@ -100,7 +100,6 @@ public class ProcessUtil {
 	 * get count sql
 	 * 
 	 * @param sql
-	 * @param page
 	 * @param dbType
 	 * @return
 	 * @author Alan

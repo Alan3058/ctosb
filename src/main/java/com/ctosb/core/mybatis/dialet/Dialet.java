@@ -32,6 +32,7 @@ public interface Dialet {
 	 * get count sql
 	 * 
 	 * @param sql
+	 * @param sorts
 	 * @return
 	 * @author Alan
 	 * @date 2016年6月30日 下午2:37:22

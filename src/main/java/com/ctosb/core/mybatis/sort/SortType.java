@@ -1,15 +1,16 @@
+
 package com.ctosb.core.mybatis.sort;
 
 /**
- * sort type 
- * asc  and  desc
+ * sort type asc and desc
  * @author liliangang
- *
  */
 public enum SortType {
+	/** 升序 */
+	ASC("ASC"),
+	/** 降序 */
+	DESC("DESC");
 
-	ASC("ASC"), DESC("DESC");
-	
 	private String value;
 
 	private SortType(String value) {
@@ -20,5 +21,4 @@ public enum SortType {
 	public String toString() {
 		return value;
 	}
-	
 }

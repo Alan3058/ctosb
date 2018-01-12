@@ -1,3 +1,4 @@
+
 package com.ctosb.core.mybatis.interceptor;
 
 import java.sql.Connection;
@@ -23,7 +24,6 @@ import com.ctosb.core.util.ReflectUtil;
 
 /**
  * please use PageInterceptor, it's contain full function
- *
  * @author Alan
  * @date 2016年6月30日 下午9:23:32
  */
@@ -34,6 +34,7 @@ public class LimitInterceptor implements Interceptor {
 	private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
 	private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
 
+	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		StatementHandler handler = (StatementHandler) invocation.getTarget();
 		// get metaObject source object
@@ -52,6 +53,7 @@ public class LimitInterceptor implements Interceptor {
 		return invocation.proceed();
 	}
 
+	@Override
 	public Object plugin(Object target) {
 		// if target object was intercepted,then return dynamic proxy object.or
 		// else return the target objectr.
@@ -61,8 +63,8 @@ public class LimitInterceptor implements Interceptor {
 		return target;
 	}
 
+	@Override
 	public void setProperties(Properties properties) {
 		// used specigy property of the outer properties config file
 	}
-
 }

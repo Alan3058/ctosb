@@ -81,6 +81,7 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 	 * 获得下一个ID (该方法是线程安全的)
 	 * @return SnowflakeId
 	 */
+	@Override
 	public synchronized Long next() {
 		long timestamp = currentTimeMills();
 		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
@@ -103,9 +104,9 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 		// 上次生成ID的时间截
 		lastTimestamp = timestamp;
 		// 移位并通过或运算拼到一起组成64位的ID
-		return ((timestamp - startTime) << timestampLeftShift) //
-				| (datacenterId << datacenterIdShift) //
-				| (workerId << workerIdShift) //
+		return ((timestamp - startTime) << timestampLeftShift)
+				| (datacenterId << datacenterIdShift)
+				| (workerId << workerIdShift)
 				| sequence;
 	}
 
