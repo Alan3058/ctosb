@@ -1,9 +1,6 @@
 
 package com.ctosb.core.generator;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Twitter_Snowflake<br>
  * SnowFlake的结构如下(每部分用-分开):<br>
@@ -104,10 +101,8 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 		// 上次生成ID的时间截
 		lastTimestamp = timestamp;
 		// 移位并通过或运算拼到一起组成64位的ID
-		return ((timestamp - startTime) << timestampLeftShift)
-				| (datacenterId << datacenterIdShift)
-				| (workerId << workerIdShift)
-				| sequence;
+		return ((timestamp - startTime) << timestampLeftShift) | (datacenterId << datacenterIdShift)
+				| (workerId << workerIdShift) | sequence;
 	}
 
 	/**
@@ -129,21 +124,6 @@ public class SnowflakeBuilder implements NumberBuilder<Long> {
 	 */
 	protected long currentTimeMills() {
 		return System.currentTimeMillis();
-	}
-
-	// ==============================Test=============================================
-	/**
-	 * 测试
-	 * @throws InterruptedException
-	 */
-	public static void main(String[] args) throws InterruptedException {
-		SnowflakeBuilder idWorker = new SnowflakeBuilder(0, 0);
-		Set<Long> set = new HashSet<Long>();
-		for (int i = 0; i < 1000; i++) {
-			long id = idWorker.next();
-			set.add(id);
-		}
-		System.out.println(set.size());
 	}
 
 	public long getWorkerId() {
