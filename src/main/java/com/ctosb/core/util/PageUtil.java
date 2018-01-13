@@ -1,11 +1,11 @@
 
 package com.ctosb.core.util;
 
-import java.util.Collection;
-
 import com.ctosb.core.mybatis.page.Page;
 import com.ctosb.core.mybatis.page.PageInfo;
 import com.ctosb.core.mybatis.page.PageList;
+
+import java.util.Collection;
 
 /**
  * page util
@@ -23,7 +23,7 @@ public class PageUtil {
 	 * @param pageList
 	 * @return
 	 */
-	public static PageInfo convertPageInfo(PageList pageList) {
+	public static <T> PageInfo<T> convertPageInfo(PageList<T> pageList) {
 		Page page = pageList.getPage();
 		PageInfo pageInfo = new PageInfo();
 		pageInfo.setData(pageList).setPageNum(page.getPageNum()).setPageSize(page.getPageSize())
@@ -40,7 +40,7 @@ public class PageUtil {
 	 * @param data
 	 * @return
 	 */
-	public static PageInfo convertPageInfo(PageList pageList, Collection data) {
+	public static <T> PageInfo<T> convertPageInfo(PageList pageList, Collection<T> data) {
 		Page page = pageList.getPage();
 		PageInfo pageInfo = new PageInfo();
 		pageInfo.setData(data).setPageNum(page.getPageNum()).setPageSize(page.getPageSize())
