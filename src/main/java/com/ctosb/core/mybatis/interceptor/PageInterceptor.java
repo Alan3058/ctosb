@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -64,6 +65,7 @@ public class PageInterceptor implements Interceptor {
 		}
 		String sql = boundSql.getSql();
 		if (pageOrLimit instanceof Page) {
+			Object result;
 			Page page = (Page) pageOrLimit;
 			// 1.execute count sql
 			// convert countSql
@@ -71,16 +73,21 @@ public class PageInterceptor implements Interceptor {
 			// execute count sql
 			int count = executeCountSql(mappedStatement, executor.getTransaction().getConnection(), parameterObject,
 					countSql);
-			if (sorts != null && sorts.size() > 0) {
-				sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
+			if (count > 0) {
+				if (sorts != null && sorts.size() > 0) {
+					sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
+				}
+				// 2.execute limit sql
+				// convert limit sql
+				String limitSql = ProcessUtil.getLimitSql(sql, page, configuration.getDatabaseId());
+				// copy a new MappedStatement instance
+				invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
+				// excute limit sql
+				result = invocation.proceed();
+			} else {
+				// count value is zero, then not need paging query and return empty list
+				result = new ArrayList();
 			}
-			// 2.execute limit sql
-			// convert limit sql
-			String limitSql = ProcessUtil.getLimitSql(sql, page, configuration.getDatabaseId());
-			// copy a new MappedStatement instance
-			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
-			// excute limit sql
-			Object result = invocation.proceed();
 			// convert result to PageList instance
 			PageList<?> pageList = new PageList((Collection) result);
 			pageList.setPage(page);
