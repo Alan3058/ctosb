@@ -34,4 +34,9 @@ public class PageList<E> extends ArrayList<E> {
 	public void setPage(Page page) {
 		this.page = page;
 	}
+
+	@Override
+	public String toString() {
+		return "PageList{" + "page=" + page + ",list=" + super.toString() + '}';
+	}
 }

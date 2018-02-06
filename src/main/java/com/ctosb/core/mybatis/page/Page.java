@@ -66,4 +66,10 @@ public class Page implements Serializable {
 		this.totalPage = totalPage;
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "Page{" + "pageNum=" + pageNum + ", pageSize=" + pageSize + ", totalRecord=" + totalRecord
+				+ ", totalPage=" + totalPage + '}';
+	}
 }

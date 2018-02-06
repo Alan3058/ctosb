@@ -12,10 +12,11 @@
 			<transactionManager type="jdbc">
 			</transactionManager>
 			<dataSource type="POOLED">
-				<property name="driver" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://localhost:3306/test" />
+				<property name="driver" value="org.h2.Driver"/>
+				<property name="url"
+						  value="jdbc:h2:mem:test;MODE=MySQL;INIT= RUNSCRIPT FROM 'classpath:sql/schema.sql'"/>
 				<property name="username" value="root" />
-				<property name="password" value="root" />
+				<property name="password" value=""/>
 			</dataSource>
 		</environment>
 	</environments>

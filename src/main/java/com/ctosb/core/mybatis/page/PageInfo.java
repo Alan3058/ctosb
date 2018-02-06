@@ -24,4 +24,10 @@ public class PageInfo<T> extends Page {
 		this.data = data;
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "PageInfo{" + "data=" + data + "pageNum=" + getPageNum() + ", pageSize=" + getPageSize()
+				+ ", totalRecord=" + getTotalRecord() + ", totalPage=" + getTotalPage() + '}';
+	}
 }
