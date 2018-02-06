@@ -1,3 +1,4 @@
+
 package com.ctosb.core;
 
 import java.io.IOException;
@@ -30,6 +31,12 @@ public class MybatisTest {
 		sessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 	}
 
+	/**
+	 * 测试插入
+	 * @date 2018/2/6 13:21
+	 * @author Alan
+	 * @since 1.0.0
+	 */
 	@Test
 	public void testInsert() {
 		SqlSession sqlSession = sessionFactory.openSession();
@@ -37,10 +44,16 @@ public class MybatisTest {
 		User user = new User().setUserName("user").setPassword("test");
 		int result = userMapper.insert(user);
 		sqlSession.commit();
-		Assert.assertTrue("获取id成功，id=" + user.getId(), user.getId() != null);
-		Assert.assertTrue("保存成功", result > 0);
+		Assert.assertTrue(user.getId() != null);
+		Assert.assertTrue(result > 0);
 	}
 
+	/**
+	 * 测试查询
+	 * @date 2018/2/6 13:22
+	 * @author Alan
+	 * @since 1.0.0
+	 */
 	@Test
 	public void testSelect() {
 		SqlSession sqlSession = sessionFactory.openSession();
@@ -49,10 +62,15 @@ public class MybatisTest {
 		userMapper.insert(user);
 		List<User> users = userMapper.getByUserName("user");
 		sqlSession.commit();
-		Assert.assertTrue("查询成功", users != null && users.size() > 0);
-
+		Assert.assertTrue(users != null && users.size() > 0);
 	}
 
+	/**
+	 * 测试通过id删除
+	 * @date 2018/2/6 13:26
+	 * @author Alan
+	 * @since 1.0.0
+	 */
 	@Test
 	public void testDelete() {
 		SqlSession sqlSession = sessionFactory.openSession();
@@ -61,9 +79,15 @@ public class MybatisTest {
 		userMapper.insert(user);
 		int result = userMapper.delete(user.getId());
 		sqlSession.commit();
-		Assert.assertTrue("通过id删除成功", result >= 0);
+		Assert.assertTrue(result >= 0);
 	}
 
+	/**
+	 * 测试按用户名删除
+	 * @date 2018/2/6 13:27
+	 * @author Alan
+	 * @since 1.0.0
+	 */
 	@Test
 	public void testDeleteByUserName() {
 		SqlSession sqlSession = sessionFactory.openSession();
@@ -72,7 +96,6 @@ public class MybatisTest {
 		userMapper.insert(user);
 		int result = userMapper.deleteByUserName("user");
 		sqlSession.commit();
-		Assert.assertTrue("通过名称删除成功", result > 0);
+		Assert.assertTrue(result > 0);
 	}
-
 }
