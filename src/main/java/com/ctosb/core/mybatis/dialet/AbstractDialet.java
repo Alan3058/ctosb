@@ -25,7 +25,7 @@ public abstract class AbstractDialet implements Dialet {
 		// join limit sql
 		StringBuilder sb = new StringBuilder();
 		for (Sort sort : sorts) {
-			sb.append(",").append(sort.getFieldName()).append(" ").append(sort.getSortType());
+			sb.append(",").append(sort.getFieldName()).append(" ").append(sort.getSortType().getValue());
 		}
 		return sql + " ORDER BY " + sb.substring(1);
 	}

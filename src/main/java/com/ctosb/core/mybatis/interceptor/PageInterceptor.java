@@ -22,6 +22,8 @@ import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ctosb.core.mybatis.page.Limit;
 import com.ctosb.core.mybatis.page.Page;
@@ -39,6 +41,8 @@ import com.ctosb.core.util.ProcessUtil;
 		RowBounds.class, ResultHandler.class, }) })
 public class PageInterceptor implements Interceptor {
 
+	private final static Logger logger = LoggerFactory.getLogger(PageInterceptor.class);
+
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -51,14 +55,20 @@ public class PageInterceptor implements Interceptor {
 		Configuration configuration = mappedStatement.getConfiguration();
 		// get paging or limit infomation
 		Object pageOrLimit = ProcessUtil.getPageOrLimit(parameterObject);
+		logger.debug("PageOrLimit parameter:{}.", pageOrLimit);
 		Collection sorts = (Collection) ProcessUtil.getSort(parameterObject);
+		logger.debug("Sort parameter:{}.", sorts);
 		parameterObject = ProcessUtil.extractParameterObject(parameterObject);
+		logger.debug("Initial parameter:{}.", parameterObject);
 		invocation.getArgs()[1] = parameterObject;
 		// get boundsql object
 		BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
+		// not need paging or limit
 		if (pageOrLimit == null) {
+			logger.debug("there aren't paging or limit paremeter ,not need paging or limit query.");
 			if (sorts != null && sorts.size() > 0) {
 				String sql = ProcessUtil.getSortSql(boundSql.getSql(), configuration.getDatabaseId(), sorts);
+				logger.debug("excute sql:{}.", sql);
 				invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(sql, boundSql, mappedStatement);
 			}
 			return invocation.proceed();
@@ -67,12 +77,15 @@ public class PageInterceptor implements Interceptor {
 		if (pageOrLimit instanceof Page) {
 			Object result;
 			Page page = (Page) pageOrLimit;
+			logger.debug("excute paging query.");
 			// 1.execute count sql
 			// convert countSql
 			String countSql = ProcessUtil.getCountSql(sql, configuration.getDatabaseId());
 			// execute count sql
+			logger.debug("excute count sql:{}.", countSql);
 			int count = executeCountSql(mappedStatement, executor.getTransaction().getConnection(), parameterObject,
 					countSql);
+			logger.debug("excute count query result is {}.", count);
 			if (count > 0) {
 				if (sorts != null && sorts.size() > 0) {
 					sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
@@ -80,11 +93,13 @@ public class PageInterceptor implements Interceptor {
 				// 2.execute limit sql
 				// convert limit sql
 				String limitSql = ProcessUtil.getLimitSql(sql, page, configuration.getDatabaseId());
+				logger.debug("excute sql:{}.", limitSql);
 				// copy a new MappedStatement instance
 				invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 				// excute limit sql
 				result = invocation.proceed();
 			} else {
+				logger.debug("excute count query result is {}, not need paging query.", count);
 				// count value is zero, then not need paging query and return empty list
 				result = new ArrayList();
 			}
@@ -95,6 +110,7 @@ public class PageInterceptor implements Interceptor {
 			// return PageList instance
 			return pageList;
 		} else if (pageOrLimit instanceof Limit) {
+			logger.debug("excute limit query.");
 			Limit limit = (Limit) pageOrLimit;
 			// 1.execute limit sql
 			// convert limit sql
@@ -102,6 +118,7 @@ public class PageInterceptor implements Interceptor {
 				sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
 			}
 			String limitSql = ProcessUtil.getLimitSql(sql, limit, configuration.getDatabaseId());
+			logger.debug("excute sql:{}.", limitSql);
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 		}
 		return invocation.proceed();

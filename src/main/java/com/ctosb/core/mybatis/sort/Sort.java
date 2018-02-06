@@ -44,4 +44,9 @@ public class Sort implements Serializable {
 		this.sortType = sortType;
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "Sort{" + "fieldName='" + fieldName + '\'' + ", sortType=" + sortType + '}';
+	}
 }
