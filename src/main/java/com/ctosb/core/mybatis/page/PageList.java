@@ -31,8 +31,9 @@ public class PageList<E> extends ArrayList<E> {
 		return page;
 	}
 
-	public void setPage(Page page) {
+	public PageList setPage(Page page) {
 		this.page = page;
+		return this;
 	}
 
 	@Override
