@@ -194,14 +194,19 @@ public class ProcessUtil {
 			Map<?, ?> parameterMap = ((Map<?, ?>) parameterObject);
 			int paramNum = parameterMap.size();
 			for (int i = 0; i < paramNum / repeatNum; i++) {
-				if (!parameterMap.containsKey(i + "")) {
+				// mybatis3.2.8 parameter name is 0,1,2; mybatis 3.4.5 parameter name is
+				// arg0,1,2
+				if (!parameterMap.containsKey(i + "") && !parameterMap.containsKey("arg" + i)) {
 					// param contain annotation, return origin param
 					return parameterMap;
 				}
 			}
 			Object tmpParam = null;
 			for (int i = 0; i < paramNum / repeatNum; i++) {
-				Object param = parameterMap.get(i + "");
+				// mybatis3.2.8 parameter name is 0,1,2; mybatis 3.4.5 parameter name is
+				// arg0,1,2
+				Object param = parameterMap.containsKey(i + "") ? parameterMap.get(i + "")
+						: parameterMap.get("arg" + i);
 				if (!((ProcessUtil.isPageOrLimit(param) || Sort.class.isInstance(param)
 						|| Sort[].class.isInstance(param) || (Collection.class.isAssignableFrom(param.getClass())
 								&& Sort.class.isAssignableFrom(param.getClass().getGenericSuperclass().getClass()))))) {
