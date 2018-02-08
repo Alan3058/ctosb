@@ -4,6 +4,8 @@ package com.ctosb.core.mybatis.interceptor;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -12,8 +14,6 @@ import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ctosb.core.mybatis.handler.LimitHandler;
 import com.ctosb.core.mybatis.handler.NotLimitPageHandler;
@@ -32,7 +32,7 @@ import com.ctosb.core.util.ProcessUtil;
 		RowBounds.class, ResultHandler.class }) })
 public class PageInterceptor implements Interceptor {
 
-	private final static Logger logger = LoggerFactory.getLogger(PageInterceptor.class);
+	private final static Log logger = LogFactory.getLog(PageInterceptor.class);
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {

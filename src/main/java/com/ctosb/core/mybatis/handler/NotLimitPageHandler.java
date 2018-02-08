@@ -3,12 +3,12 @@ package com.ctosb.core.mybatis.handler;
 
 import java.util.Collection;
 
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.session.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ctosb.core.util.MybatisUtil;
 import com.ctosb.core.util.ProcessUtil;
@@ -21,7 +21,7 @@ import com.ctosb.core.util.ProcessUtil;
  */
 public class NotLimitPageHandler implements Handler {
 
-	private final static Logger logger = LoggerFactory.getLogger(NotLimitPageHandler.class);
+	private final static Log logger = LogFactory.getLog(NotLimitPageHandler.class);
 
 	@Override
 	public Object process(Invocation invocation, MappedStatement mappedStatement, Object pageOrLimit) throws Throwable {
@@ -33,16 +33,16 @@ public class NotLimitPageHandler implements Handler {
 		Collection sorts = (Collection) ProcessUtil.getSort(parameterObject);
 		if (sorts != null && sorts.size() > 0) {
 			// sort parameter exists.
-			logger.debug("Sort parameter:{}.", sorts);
+			logger.debug(String.format("Sort parameter:%s.", sorts));
 			// extract parameter object
 			parameterObject = ProcessUtil.extractParameterObject(parameterObject);
-			logger.debug("Initial parameter:{}.", parameterObject);
+			logger.debug(String.format("Initial parameter:%s.", parameterObject));
 			// rewrite parameter object, will exclude page or limit or sort parameter.
 			invocation.getArgs()[1] = parameterObject;
 			// get boundsql object
 			BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 			String sql = ProcessUtil.getSortSql(boundSql.getSql(), configuration.getDatabaseId(), sorts);
-			logger.debug("excute sql:{}.", sql);
+			logger.debug(String.format("excute sql:%s.", sql));
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(sql, boundSql, mappedStatement);
 		}
 		return invocation.proceed();

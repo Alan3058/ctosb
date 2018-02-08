@@ -19,7 +19,6 @@ ext {
     log4jVersion="2.7"
     mysqlVersion="5.1.40"
     junitVersion="4.12"
-
 }
 
 repositories {
@@ -35,12 +34,8 @@ dependencies {
     compile("org.mybatis:mybatis:${mybatisVersion}")
     compile("org.mybatis:mybatis-spring:${mybatisSpringVersion}")
     compile("org.aspectj:aspectjweaver:${aspectjweaverVersion}")
-    compile("com.alibaba:druid:${druidVersion}")
 
-    compile("org.apache.logging.log4j:log4j-core:${log4jVersion}")
-    compile("org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}")
-    compile("mysql:mysql-connector-java:${mysqlVersion}")
-
+    testCompile("com.alibaba:druid:${druidVersion}")
     testCompile("junit:junit:${junitVersion}")
     testCompile("com.h2database:h2:${h2Version}")
 }

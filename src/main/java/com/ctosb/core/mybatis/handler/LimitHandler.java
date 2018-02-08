@@ -3,12 +3,12 @@ package com.ctosb.core.mybatis.handler;
 
 import java.util.Collection;
 
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.session.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ctosb.core.mybatis.page.Limit;
 import com.ctosb.core.util.MybatisUtil;
@@ -22,7 +22,7 @@ import com.ctosb.core.util.ProcessUtil;
  */
 public class LimitHandler implements Handler {
 
-	private final static Logger logger = LoggerFactory.getLogger(LimitHandler.class);
+	private final static Log logger = LogFactory.getLog(LimitHandler.class);
 
 	@Override
 	public Object process(Invocation invocation, MappedStatement mappedStatement, Object pageOrLimit) throws Throwable {
@@ -32,9 +32,9 @@ public class LimitHandler implements Handler {
 		// get mybatis configuration object
 		Configuration configuration = mappedStatement.getConfiguration();
 		Collection sorts = (Collection) ProcessUtil.getSort(parameterObject);
-		logger.debug("Sort parameter:{}.", sorts);
+		logger.debug(String.format("Sort parameter:%s.", sorts));
 		parameterObject = ProcessUtil.extractParameterObject(parameterObject);
-		logger.debug("Initial parameter:{}.", parameterObject);
+		logger.debug(String.format("Initial parameter:%s.", parameterObject));
 		// rewrite parameter object, will exclude page or limit or sort parameter.
 		invocation.getArgs()[1] = parameterObject;
 		// get boundsql object
@@ -46,7 +46,7 @@ public class LimitHandler implements Handler {
 			sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
 		}
 		String limitSql = ProcessUtil.getLimitSql(sql, limit, configuration.getDatabaseId());
-		logger.debug("excute sql:{}.", limitSql);
+		logger.debug(String.format("excute sql:%s.", limitSql));
 		invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 		return invocation.proceed();
 	}

@@ -10,13 +10,13 @@ import java.util.Collection;
 
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ctosb.core.mybatis.page.Page;
 import com.ctosb.core.mybatis.page.PageList;
@@ -31,7 +31,7 @@ import com.ctosb.core.util.ProcessUtil;
  */
 public class PageHandler implements Handler {
 
-	private final static Logger logger = LoggerFactory.getLogger(PageHandler.class);
+	private final static Log logger = LogFactory.getLog(PageHandler.class);
 
 	@Override
 	public Object process(Invocation invocation, MappedStatement mappedStatement, Object pageOrLimit) throws Throwable {
@@ -41,9 +41,9 @@ public class PageHandler implements Handler {
 		// get parameterObject param
 		Object parameterObject = invocation.getArgs()[1];
 		Collection sorts = (Collection) ProcessUtil.getSort(parameterObject);
-		logger.debug("Sort parameter:{}.", sorts);
+		logger.debug(String.format("Sort parameter:%s.", sorts));
 		parameterObject = ProcessUtil.extractParameterObject(parameterObject);
-		logger.debug("Initial parameter:{}.", parameterObject);
+		logger.debug(String.format("Initial parameter:%s.", parameterObject));
 		// rewrite parameter object, will exclude page or limit or sort parameter.
 		invocation.getArgs()[1] = parameterObject;
 		// get boundsql object
@@ -51,7 +51,7 @@ public class PageHandler implements Handler {
 		String sql = boundSql.getSql();
 		// 1.execute count sql
 		int count = executeCountSql(invocation, mappedStatement, parameterObject, sql);
-		logger.debug("excute count query result is {}.", count);
+		logger.debug(String.format("excute count query result is %s.", count));
 		if (count > 0) {
 			if (sorts != null && sorts.size() > 0) {
 				sql = ProcessUtil.getSortSql(sql, configuration.getDatabaseId(), sorts);
@@ -59,14 +59,14 @@ public class PageHandler implements Handler {
 			// 2.execute page sql
 			// convert page sql
 			String limitSql = ProcessUtil.getLimitSql(sql, page, configuration.getDatabaseId());
-			logger.debug("excute sql:{}.", limitSql);
+			logger.debug(String.format("excute sql:%s.", limitSql));
 			// copy a new MappedStatement instance
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 			// excute page sql
 			// convert result to PageList instance
 			return new PageList((Collection) invocation.proceed()).setPage(page.setTotalPage(count));
 		} else {
-			logger.debug("excute count query result is {}, not need paging query.", count);
+			logger.debug(String.format("excute count query result is %s, not need paging query.", count));
 			// count value is zero, then not need paging query and return empty list
 			return new PageList(new ArrayList()).setPage(page.setTotalPage(count));
 		}
@@ -90,7 +90,7 @@ public class PageHandler implements Handler {
 		// convert countSql
 		String countSql = ProcessUtil.getCountSql(sql, mappedStatement.getConfiguration().getDatabaseId());
 		// execute count sql
-		logger.debug("excute count sql:{}.", countSql);
+		logger.debug(String.format("excute count sql:%s.", countSql));
 		BoundSql boundSql = new BoundSql(mappedStatement.getConfiguration(), sql,
 				mappedStatement.getBoundSql(parameterObject).getParameterMappings(), parameterObject);
 		return this.executeCountSql(mappedStatement, executor.getTransaction().getConnection(), parameterObject,
