@@ -64,7 +64,7 @@ public class PageHandler implements Handler {
 			invocation.getArgs()[0] = MybatisUtil.createNewMappedStatement(limitSql, boundSql, mappedStatement);
 			// excute page sql
 			// convert result to PageList instance
-			return new PageList((Collection) invocation.proceed()).setPage(page.setTotalPage(count));
+			return new PageList((Collection) invocation.proceed()).setPage(page.setTotalRecord(count));
 		} else {
 			logger.debug(String.format("excute count query result is %s, not need paging query.", count));
 			// count value is zero, then not need paging query and return empty list
