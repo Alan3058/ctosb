@@ -91,7 +91,7 @@ public class PageHandler implements Handler {
 		String countSql = ProcessUtil.getCountSql(sql, mappedStatement.getConfiguration().getDatabaseId());
 		// execute count sql
 		logger.debug(String.format("excute count sql:%s.", countSql));
-		BoundSql boundSql = new BoundSql(mappedStatement.getConfiguration(), sql,
+		BoundSql boundSql = new BoundSql(mappedStatement.getConfiguration(), countSql,
 				mappedStatement.getBoundSql(parameterObject).getParameterMappings(), parameterObject);
 		return this.executeCountSql(mappedStatement, executor.getTransaction().getConnection(), parameterObject,
 				boundSql);
